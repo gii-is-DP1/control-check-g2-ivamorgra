@@ -11,6 +11,9 @@ public interface FeedingRepository extends CrudRepository<Feeding,Integer> {
     
     @Query("SELECT ft FROM FeedingType ft")
     List<FeedingType> findAllFeedingTypes();
+    
+    @Query("SELECT ft FROM FeedingType ft WHERE ft.name = :typeName ")
+    FeedingType getFeedingType(String typeName);
     Optional<Feeding> findById(int id);
     Feeding save(Feeding p);
 }
