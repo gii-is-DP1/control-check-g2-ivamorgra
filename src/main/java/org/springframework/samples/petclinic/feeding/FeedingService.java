@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.samples.petclinic.pet.PetRepository;
-import org.springframework.samples.petclinic.pet.VisitRepository;
+import org.springframework.samples.petclinic.pet.Pet;
+import org.springframework.samples.petclinic.pet.exceptions.DuplicatedPetNameException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,9 +33,17 @@ public class FeedingService {
     public FeedingType getFeedingType(String typeName) {
         return this.feedingRepository.getFeedingType(typeName);
     }
-
+    
+    @Transactional(rollbackFor = UnfeasibleFeedingException.class)
     public Feeding save(Feeding p) throws UnfeasibleFeedingException {
-        return null;
+    	
+    	Pet pet = p.getPet();
+    	if(pet.getType().equals(p.getFeedingType().getPetType())) {
+    		return this.feedingRepository.save(p);
+    	}else {
+    		throw new UnfeasibleFeedingException();
+    	}
+        
     }
 
     
